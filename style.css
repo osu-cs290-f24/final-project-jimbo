@@ -1,0 +1,63 @@
+:root {
+    --primary-color: #FFD1DC;
+    --secondary-color: #BFEFFF;
+    --text-color: #333;
+    --background-color: #FFF;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: var(--primary-color);
+    padding: 1rem;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+nav ul li a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+main {
+    padding: 2rem;
+}
+
+.post {
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ar-fitting {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+}
+
+footer {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
