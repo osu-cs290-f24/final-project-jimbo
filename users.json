@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "username": "qorjin",
+      "password": "$2b$10$g7j.Ve/TwHx/96IK2HfzYuzahE3GeHNYYoTdxnKX14KP/tTADQ5wS"
+    },
+    {
+      "username": "hello",
+      "password": "$2b$10$Afc19/rwJ.dYQ0eEtXi49e2uZYMnXyEDFZkigQN/jxocx4j2yWMmC"
+    },
+    {
+      "username": "jinwoo",
+      "password": "$2b$10$1JlT/DDf6II0PFxtt15rFOhjKfI5XJw4sB04xpT3XQrvdK6LG7yxi"
+    }
+  ]
+}
