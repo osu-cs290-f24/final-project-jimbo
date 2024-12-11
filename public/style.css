@@ -470,3 +470,119 @@ main {
 .create-post-form button:active {
   transform: scale(0.98);
 }
+
+.posts-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.post {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.post:hover {
+  transform: translateY(-5px);
+}
+
+.post h2 {
+  font-size: 1.2rem;
+  margin: 15px;
+  color: var(--primary-color);
+}
+
+.post p {
+  margin: 0 15px 15px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.post img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.like-button {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border: none;
+  padding: 8px 15px;
+  margin: 0 15px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.like-button:hover {
+  background-color: #ffc0cb;
+}
+
+.comments {
+  margin: 0 15px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.comment {
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+}
+
+.comment strong {
+  color: var(--primary-color);
+}
+
+.comment-form {
+  display: flex;
+  margin: 15px;
+  gap: 10px;
+}
+
+.comment-form input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.comment-form button {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.comment-form button:hover {
+  background-color: #ffc0cb;
+}
+
+@media screen and (max-width: 1200px) {
+  .posts-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .posts-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .posts-container {
+    grid-template-columns: 1fr;
+  }
+}
+

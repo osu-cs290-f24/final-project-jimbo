@@ -259,8 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadMorePosts();
       }
     });
-  }
-  
+  }  
   
   function likePost(postId) {
     fetch(`/api/posts/${postId}/like`, {
@@ -280,59 +279,79 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     })
     .catch(error => console.error('Error liking post:', error));
-  }
-  
+  }  
 
   // Function to create a post element
   function createPostElement(post) {
     const postElement = document.createElement('div');
     postElement.className = 'post';
-    postElement.innerHTML = `
-      <h2>${post.title}</h2>
-      <p>By ${post.author}</p>
-      ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}">` : ''}
-      <p>${post.content}</p>
-      <button class="like-button" data-id="${post.id}">Like (${post.likes})</button>
-      <div class="comments">
-        ${post.comments.map(comment => `
-          <div class="comment">
-            <p><strong>${comment.author}:</strong> ${comment.content}</p>
-          </div>
-        `).join('')}
-      </div>
-      <form class="comment-form" data-id="${post.id}">
-        <input type="text" placeholder="Add a comment" required>
-        <button type="submit">Comment</button>
-      </form>
-    `;
-  
-    const likeButton = postElement.querySelector('.like-button');
+
+    const title = document.createElement('h2');
+    title.textContent = post.title;
+    postElement.appendChild(title);
+
+    const author = document.createElement('p');
+    author.textContent = `By ${post.author}`;
+    postElement.appendChild(author);
+
+    if (post.imageUrl) {
+      const image = document.createElement('img');
+      image.src = post.imageUrl;
+      image.alt = post.title;
+      postElement.appendChild(image);
+    }
+
+    const content = document.createElement('p');
+    content.textContent = post.content;
+    postElement.appendChild(content);
+
+    const likeButton = document.createElement('button');
+    likeButton.className = 'like-button';
+    likeButton.textContent = `Like (${post.likes})`;
+    likeButton.dataset.id = post.id;
     likeButton.addEventListener('click', () => likePost(post.id));
-  
-    const commentForm = postElement.querySelector('.comment-form');
+    postElement.appendChild(likeButton);
+
+    const commentsDiv = document.createElement('div');
+    commentsDiv.className = 'comments';
+    post.comments.forEach(comment => {
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'comment';
+      const commentP = document.createElement('p');
+      const commentAuthor = document.createElement('strong');
+      commentAuthor.textContent = `${comment.author}: `;
+      commentP.appendChild(commentAuthor);
+      commentP.appendChild(document.createTextNode(comment.content));
+      commentDiv.appendChild(commentP);
+      commentsDiv.appendChild(commentDiv);
+    });
+    postElement.appendChild(commentsDiv);
+
+    const commentForm = document.createElement('form');
+    commentForm.className = 'comment-form';
+    commentForm.dataset.id = post.id;
+
+    const commentInput = document.createElement('input');
+    commentInput.type = 'text';
+    commentInput.placeholder = 'Add a comment';
+    commentInput.required = true;
+    commentForm.appendChild(commentInput);
+
+    const commentButton = document.createElement('button');
+    commentButton.type = 'submit';
+    commentButton.textContent = 'Comment';
+    commentForm.appendChild(commentButton);
+
     commentForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      addComment(post.id, e.target.querySelector('input').value);
+      addComment(post.id, commentInput.value);
     });
-  
-    return postElement;
-  }
-  
-  function likePost(postId) {
-    fetch(`/api/posts/${postId}/like`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      const likeButton = document.querySelector(`.like-button[data-id="${postId}"]`);
-      likeButton.textContent = `Like (${data.likes})`;
-    })
-    .catch(error => console.error('Error liking post:', error));
-  }
 
+    postElement.appendChild(commentForm);
+
+    return postElement;
+  }  
+    
   // Function to add a comment
   function addComment(postId, content) {
     fetch(`/api/posts/${postId}/comment`, {
@@ -362,12 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
     formTitle.textContent = 'Create New Post';
     createPostForm.appendChild(formTitle);
 
-    const titleInput = document.createElement('input');
-    titleInput.type = 'text';
-    titleInput.id = 'postTitle';
-    titleInput.placeholder = 'Enter post title';
-    titleInput.required = true;
-
     const contentTextarea = document.createElement('textarea');
     contentTextarea.id = 'postContent';
     contentTextarea.placeholder = 'Enter post content';
@@ -392,24 +405,22 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelButton.className = 'cancel-button';
     cancelButton.addEventListener('click', () => {
       createPostForm.remove();
-      renderHome(); // 또는 이전 페이지로 돌아가는 적절한 함수 호출
+      renderHome();
     });
 
     buttonContainer.appendChild(submitButton);
     buttonContainer.appendChild(cancelButton);
 
-    createPostForm.appendChild(titleInput);
     createPostForm.appendChild(contentTextarea);
     createPostForm.appendChild(imageUrlInput);
     createPostForm.appendChild(buttonContainer);
 
     createPostForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const title = document.getElementById('postTitle').value;
       const content = document.getElementById('postContent').value;
       const imageUrl = document.getElementById('postImageUrl').value;
 
-      createPost(title, content, imageUrl);
+      createPost(content, imageUrl);
     });
 
     // 기존 create 메뉴 제거
@@ -417,7 +428,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (existingCreateMenu) existingCreateMenu.remove();
 
     app.appendChild(createPostForm);
-  }  
+}
+
 
   // Function to create a new post
   function createPost(title, content, imageUrl) {

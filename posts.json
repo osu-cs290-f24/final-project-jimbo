@@ -1,3 +1,38 @@
 {
-  "posts": []
+  "posts": [
+    {
+      "id": 1733948333638,
+      "title": "df",
+      "content": "df",
+      "imageUrl": "",
+      "likes": 5,
+      "comments": [
+        {
+          "author": "qorjin",
+          "content": "hello",
+          "id": 1733949066297
+        },
+        {
+          "author": "qorjin",
+          "content": "hello",
+          "id": 1733949067034
+        },
+        {
+          "author": "qorjin",
+          "content": "I don't know",
+          "id": 1733950181082
+        }
+      ],
+      "likedBy": []
+    },
+    {
+      "id": 1733947955621,
+      "title": "jinwoo",
+      "content": "jinwoo",
+      "imageUrl": "",
+      "likes": 15,
+      "comments": [],
+      "likedBy": []
+    }
+  ]
 }
