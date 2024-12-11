@@ -173,6 +173,7 @@ app.post('/api/posts', authenticateToken, (req, res) => {
     title, 
     content, 
     author: req.user.username,
+    userId: req.user.id, // 사용자 ID 추가
     imageUrl, 
     likes: 0, 
     comments: [] 
@@ -181,6 +182,7 @@ app.post('/api/posts', authenticateToken, (req, res) => {
   writePosts(posts);
   res.status(201).json(newPost);
 });
+
 
 app.post('/api/posts/:id/like', authenticateToken, (req, res) => {
   const postId = parseInt(req.params.id);

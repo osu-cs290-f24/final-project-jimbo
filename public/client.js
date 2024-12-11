@@ -286,13 +286,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const postElement = document.createElement('div');
     postElement.className = 'post';
 
-    const title = document.createElement('h2');
-    title.textContent = post.title;
-    postElement.appendChild(title);
+    // Create User Header
+    const userHeader = document.createElement('div');
+    userHeader.className = 'user-header';
 
-    const author = document.createElement('p');
-    author.textContent = `By ${post.author}`;
-    postElement.appendChild(author);
+    const userAvatar = document.createElement('img');
+    userAvatar.src = post.userAvatar || 'default-profile.png';
+    userAvatar.alt = `${post.userId}'s profile`;
+    userAvatar.className = 'user-avatar';
+
+    const userInfo = document.createElement('div');
+    userInfo.className = 'user-info';
+    
+    const userId = document.createElement('span');
+    userId.className = 'user-id';
+    userId.textContent = post.author;
+    
+    userInfo.appendChild(userId);
+    userHeader.appendChild(userAvatar);
+    userHeader.appendChild(userInfo);
+    postElement.appendChild(userHeader);
 
     if (post.imageUrl) {
       const image = document.createElement('img');
@@ -423,30 +436,29 @@ document.addEventListener('DOMContentLoaded', () => {
       createPost(content, imageUrl);
     });
 
-    // 기존 create 메뉴 제거
+
     const existingCreateMenu = document.querySelector('.create-menu');
     if (existingCreateMenu) existingCreateMenu.remove();
 
     app.appendChild(createPostForm);
 }
 
-
   // Function to create a new post
-  function createPost(title, content, imageUrl) {
+  function createPost(content, imageUrl) {
     fetch('/api/posts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
-      body: JSON.stringify({ title, content, imageUrl })
+      body: JSON.stringify({ content, imageUrl })
     })
     .then(response => response.json())
     .then(post => {
       renderHome();
     })
     .catch(error => console.error('Error creating post:', error));
-  }
+  }  
   
   // Add event listener for logo click
   document.getElementById('logo').addEventListener('click', () => {
