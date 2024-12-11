@@ -207,14 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => console.error('Error:', error));
   }
 
-  // Function to render the home page
-  function renderHome() {
-    clearElement(app);
-    document.querySelector('header').style.display = 'block'; // Show header
-  
-    // Add more content for the home page here
-  }
-
   // Function to handle logout
   function handleLogout() {
     currentUser = null;
@@ -222,24 +214,256 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('header').style.display = 'none'; // Hide header
     document.body.classList.remove('logged-in'); // Remove logged-in class from body
     renderLoginPage();
-  }    
+  }
+
+  function renderHome() {
+    clearElement(app);
+    document.querySelector('header').style.display = 'block';
+    const postsContainer = document.createElement('div');
+    postsContainer.className = 'posts-container';
+    app.appendChild(postsContainer);
+  
+    let page = 1;
+    let isLoading = false;
+    let hasMorePosts = true;
+  
+    function loadMorePosts() {
+      if (isLoading || !hasMorePosts) return;
+      isLoading = true;
+  
+      fetch(`/api/home?page=${page}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        data.posts.forEach(post => {
+          const postElement = createPostElement(post);
+          postsContainer.appendChild(postElement);
+        });
+        hasMorePosts = data.hasMore;
+        isLoading = false;
+        page++;
+      })
+      .catch(error => {
+        console.error('Error loading posts:', error);
+        isLoading = false;
+      });
+    }
+  
+    loadMorePosts();
+  
+    window.addEventListener('scroll', () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+        loadMorePosts();
+      }
+    });
+  }
+  
+  
+  function likePost(postId) {
+    fetch(`/api/posts/${postId}/like`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        const likeButton = document.querySelector(`.like-button[data-id="${postId}"]`);
+        likeButton.textContent = `Like (${data.likes})`;
+        likeButton.classList.toggle('liked', data.liked);
+      } else {
+        alert(data.message);
+      }
+    })
+    .catch(error => console.error('Error liking post:', error));
+  }
+  
+
+  // Function to create a post element
+  function createPostElement(post) {
+    const postElement = document.createElement('div');
+    postElement.className = 'post';
+    postElement.innerHTML = `
+      <h2>${post.title}</h2>
+      <p>By ${post.author}</p>
+      ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}">` : ''}
+      <p>${post.content}</p>
+      <button class="like-button" data-id="${post.id}">Like (${post.likes})</button>
+      <div class="comments">
+        ${post.comments.map(comment => `
+          <div class="comment">
+            <p><strong>${comment.author}:</strong> ${comment.content}</p>
+          </div>
+        `).join('')}
+      </div>
+      <form class="comment-form" data-id="${post.id}">
+        <input type="text" placeholder="Add a comment" required>
+        <button type="submit">Comment</button>
+      </form>
+    `;
+  
+    const likeButton = postElement.querySelector('.like-button');
+    likeButton.addEventListener('click', () => likePost(post.id));
+  
+    const commentForm = postElement.querySelector('.comment-form');
+    commentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      addComment(post.id, e.target.querySelector('input').value);
+    });
+  
+    return postElement;
+  }
+  
+  function likePost(postId) {
+    fetch(`/api/posts/${postId}/like`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      const likeButton = document.querySelector(`.like-button[data-id="${postId}"]`);
+      likeButton.textContent = `Like (${data.likes})`;
+    })
+    .catch(error => console.error('Error liking post:', error));
+  }
+
+  // Function to add a comment
+  function addComment(postId, content) {
+    fetch(`/api/posts/${postId}/comment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({ author: currentUser.username, content })
+    })
+    .then(response => response.json())
+    .then(comment => {
+      const commentsContainer = document.querySelector(`.post[data-id="${postId}"] .comments`);
+      const commentElement = document.createElement('div');
+      commentElement.className = 'comment';
+      commentElement.innerHTML = `<p><strong>${comment.author}:</strong> ${comment.content}</p>`;
+      commentsContainer.appendChild(commentElement);
+    })
+    .catch(error => console.error('Error adding comment:', error));
+  }
+
+  function renderCreatePost() {
+    const createPostForm = document.createElement('form');
+    createPostForm.className = 'create-post-form';
+
+    const formTitle = document.createElement('h2');
+    formTitle.textContent = 'Create New Post';
+    createPostForm.appendChild(formTitle);
+
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.id = 'postTitle';
+    titleInput.placeholder = 'Enter post title';
+    titleInput.required = true;
+
+    const contentTextarea = document.createElement('textarea');
+    contentTextarea.id = 'postContent';
+    contentTextarea.placeholder = 'Enter post content';
+    contentTextarea.required = true;
+
+    const imageUrlInput = document.createElement('input');
+    imageUrlInput.type = 'text';
+    imageUrlInput.id = 'postImageUrl';
+    imageUrlInput.placeholder = 'Enter image URL (optional)';
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+
+    const submitButton = document.createElement('button');
+    submitButton.type = 'submit';
+    submitButton.textContent = 'Create Post';
+    submitButton.className = 'submit-button';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.textContent = 'Cancel';
+    cancelButton.className = 'cancel-button';
+    cancelButton.addEventListener('click', () => {
+      createPostForm.remove();
+      renderHome(); // 또는 이전 페이지로 돌아가는 적절한 함수 호출
+    });
+
+    buttonContainer.appendChild(submitButton);
+    buttonContainer.appendChild(cancelButton);
+
+    createPostForm.appendChild(titleInput);
+    createPostForm.appendChild(contentTextarea);
+    createPostForm.appendChild(imageUrlInput);
+    createPostForm.appendChild(buttonContainer);
+
+    createPostForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('postTitle').value;
+      const content = document.getElementById('postContent').value;
+      const imageUrl = document.getElementById('postImageUrl').value;
+
+      createPost(title, content, imageUrl);
+    });
+
+    // 기존 create 메뉴 제거
+    const existingCreateMenu = document.querySelector('.create-menu');
+    if (existingCreateMenu) existingCreateMenu.remove();
+
+    app.appendChild(createPostForm);
+  }  
+
+  // Function to create a new post
+  function createPost(title, content, imageUrl) {
+    fetch('/api/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({ title, content, imageUrl })
+    })
+    .then(response => response.json())
+    .then(post => {
+      renderHome();
+    })
+    .catch(error => console.error('Error creating post:', error));
+  }
+  
+  // Add event listener for logo click
+  document.getElementById('logo').addEventListener('click', () => {
+    if (currentUser) {
+      window.location.href = '/'; // This will trigger a page reload and the server will handle the routing
+    } else {
+      renderLoginPage();
+    }
+  });
 
   document.getElementById('profileButton').addEventListener('click', () => {
     if (currentUser) {
-      // Remove existing profile menu if it exists
-      const existingMenu = document.querySelector('.profile-menu');
-      if (existingMenu) {
-        existingMenu.remove();
-      } else {
-        // Create profile menu
-        const profileMenu = document.createElement('div');
-        profileMenu.className = 'profile-menu';
+      // Remove any existing menus (profile or create menus)
+      const existingProfileMenu = document.querySelector('.profile-menu');
+      const existingCreateMenu = document.querySelector('.create-menu');
+      if (existingProfileMenu) existingProfileMenu.remove();
+      if (existingCreateMenu) existingCreateMenu.remove();
+  
+      // Toggle profile menu
+      const profileMenu = document.querySelector('.profile-menu');
+      if (!profileMenu) {
+        const newProfileMenu = document.createElement('div');
+        newProfileMenu.className = 'profile-menu';
   
         // Display user name
         const usernameDisplay = document.createElement('p');
         usernameDisplay.textContent = currentUser.username;
         usernameDisplay.className = 'profile-username';
-        profileMenu.appendChild(usernameDisplay);
+        newProfileMenu.appendChild(usernameDisplay);
   
         // Menu options
         const menuOptions = [
@@ -259,17 +483,51 @@ document.addEventListener('DOMContentLoaded', () => {
           menuItem.className = 'profile-menu-item';
           menuItem.textContent = option.text;
           menuItem.addEventListener('click', option.action);
-          profileMenu.appendChild(menuItem);
+          newProfileMenu.appendChild(menuItem);
         });
   
-        app.appendChild(profileMenu);
+        app.appendChild(newProfileMenu);
       }
     } else {
       renderLoginPage();
     }
   });
   
-
+  document.getElementById('createButton').addEventListener('click', () => {
+    if (currentUser) {
+      // Remove any existing menus (profile or create menus)
+      const existingProfileMenu = document.querySelector('.profile-menu');
+      const existingCreateMenu = document.querySelector('.create-menu');
+      if (existingProfileMenu) existingProfileMenu.remove();
+      if (existingCreateMenu) existingCreateMenu.remove();
+  
+      // Toggle create menu
+      const createMenu = document.querySelector('.create-menu');
+      if (!createMenu) {
+        const newCreateMenu = document.createElement('div');
+        newCreateMenu.className = 'create-menu';
+  
+        // Menu options
+        const menuOptions = [
+          { text: 'Create Post', action: () => renderCreatePost() },
+          { text: 'Create Story', action: () => console.log('Create Story clicked') }
+        ];
+  
+        menuOptions.forEach(option => {
+          const menuItem = document.createElement('button');
+          menuItem.className = 'create-menu-item';
+          menuItem.textContent = option.text;
+          menuItem.addEventListener('click', option.action);
+          newCreateMenu.appendChild(menuItem);
+        });
+  
+        app.appendChild(newCreateMenu);
+      }
+    } else {
+      renderLoginPage();
+    }
+  });
+  
   // Check if user is already logged in
   const token = localStorage.getItem('token');
   if (token) {

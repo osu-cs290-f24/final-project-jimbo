@@ -52,6 +52,7 @@ header {
     font-weight: bold;
     margin: 0;
     letter-spacing: 2px;
+    cursor: pointer;
 }
 
 .user-menu {
@@ -361,4 +362,111 @@ main {
   
 .profile-menu-item:hover {
     background-color: #f5f5f5;
+}
+
+.create-menu {
+    position: absolute;
+    top: 60px;
+    right: 85px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 10px;
+}
+  
+.create-menu-item {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+}
+  
+.create-menu-item:hover {
+    background-color: #f5f5f5;
+}
+
+.create-post-form {
+  max-width: 600px;
+  margin: 60px auto;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.create-post-form h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.create-post-form input,
+.create-post-form textarea {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  background-color: #fafafa;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.create-post-form input:focus,
+.create-post-form textarea:focus {
+  border-color: var(--secondary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 209, 220, 0.3);
+}
+
+.create-post-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.create-post-form button {
+  width: 48%;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.create-post-form .submit-button {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.create-post-form .submit-button:hover {
+  background-color: #ffc0cb;
+}
+
+.create-post-form .cancel-button {
+  background-color: #f5f5f5;
+  color: var(--primary-color);
+}
+
+.create-post-form .cancel-button:hover {
+  background-color: #e0e0e0;
+}
+
+.create-post-form button:active {
+  transform: scale(0.98);
 }
