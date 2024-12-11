@@ -94,13 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
     authContainer.className = 'auth-container';
 
     // Add header for registration page
-    const registerHeader = document.createElement('h2');
-    registerHeader.textContent = 'Create an Account';
-    authContainer.appendChild(registerHeader);
+    const logo = document.createElement('div');
+    logo.className = 'auth-logo';
+    logo.textContent = 'JIWHAZA';
+    authContainer.appendChild(logo);
 
     // Create registration form
     const registerForm = document.createElement('form');
     registerForm.id = 'registerForm';
+
+    const inputContainer = document.createElement('div');
+    inputContainer.className = 'input-container';
 
     // Create new username input field
     const newUsernameInput = document.createElement('input');
@@ -108,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     newUsernameInput.id = 'newUsername';
     newUsernameInput.placeholder = 'Username';
     newUsernameInput.required = true;
-    registerForm.appendChild(newUsernameInput);
+    inputContainer.appendChild(newUsernameInput);
 
     // Create new password input field
     const newPasswordInput = document.createElement('input');
@@ -116,12 +120,15 @@ document.addEventListener('DOMContentLoaded', () => {
     newPasswordInput.id = 'newPassword';
     newPasswordInput.placeholder = 'Password';
     newPasswordInput.required = true;
-    registerForm.appendChild(newPasswordInput);
+    inputContainer.appendChild(newPasswordInput);
+
+    registerForm.appendChild(inputContainer);
 
     // Create sign up button
     const registerButton = document.createElement('button');
     registerButton.type = 'submit';
     registerButton.textContent = 'Sign Up';
+    registerButton.className = 'login-button';
     registerForm.appendChild(registerButton);
 
     // Add event listener for form submission
@@ -204,10 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderHome() {
     clearElement(app);
     document.querySelector('header').style.display = 'block'; // Show header
-    
-    const welcomeHeader = document.createElement('h2');
-    welcomeHeader.textContent = `Welcome, ${currentUser.username}!`;
-    app.appendChild(welcomeHeader);
+  
     // Add more content for the home page here
   }
 
@@ -220,30 +224,51 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLoginPage();
   }    
 
-  // Add event listener for profile button
   document.getElementById('profileButton').addEventListener('click', () => {
     if (currentUser) {
-      // Create profile menu
-      const profileMenu = document.createElement('div');
-      profileMenu.className = 'profile-menu';
-
-      // Display username
-      const usernameDisplay = document.createElement('p');
-      usernameDisplay.textContent = currentUser.username;
-      profileMenu.appendChild(usernameDisplay);
-
-      // Create logout button
-      const logoutButton = document.createElement('button');
-      logoutButton.id = 'logoutButton';
-      logoutButton.textContent = 'Logout';
-      logoutButton.addEventListener('click', handleLogout);
-      profileMenu.appendChild(logoutButton);
-
-      app.appendChild(profileMenu);
+      // Remove existing profile menu if it exists
+      const existingMenu = document.querySelector('.profile-menu');
+      if (existingMenu) {
+        existingMenu.remove();
+      } else {
+        // Create profile menu
+        const profileMenu = document.createElement('div');
+        profileMenu.className = 'profile-menu';
+  
+        // Display user name
+        const usernameDisplay = document.createElement('p');
+        usernameDisplay.textContent = currentUser.username;
+        usernameDisplay.className = 'profile-username';
+        profileMenu.appendChild(usernameDisplay);
+  
+        // Menu options
+        const menuOptions = [
+          { text: 'My Posts', action: () => console.log('My Posts clicked') },
+          { text: 'Followers', action: () => console.log('Followers clicked') },
+          { text: 'Following', action: () => console.log('Following clicked') },
+          { text: 'Liked Posts', action: () => console.log('Liked Posts clicked') },
+          { text: 'Saved Outfits', action: () => console.log('Saved Outfits clicked') },
+          { text: 'Style Collections', action: () => console.log('Style Collections clicked') },
+          { text: 'Fashion Events', action: () => console.log('Fashion Events clicked') },
+          { text: 'Settings', action: () => console.log('Settings clicked') },
+          { text: 'Logout', action: handleLogout }
+        ];
+  
+        menuOptions.forEach(option => {
+          const menuItem = document.createElement('button');
+          menuItem.className = 'profile-menu-item';
+          menuItem.textContent = option.text;
+          menuItem.addEventListener('click', option.action);
+          profileMenu.appendChild(menuItem);
+        });
+  
+        app.appendChild(profileMenu);
+      }
     } else {
       renderLoginPage();
     }
   });
+  
 
   // Check if user is already logged in
   const token = localStorage.getItem('token');
