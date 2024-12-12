@@ -480,7 +480,7 @@ main {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100%;  /* 높이 100%로 설정 */
+  height: 100%;
 }
 
 .user-header {
@@ -560,7 +560,7 @@ main {
 }
 
 .comments {
-  margin-top: auto;  /* 이 속성만 추가 */
+  margin-top: auto;
 }
 
 .comment strong {
@@ -572,7 +572,7 @@ main {
   bottom: 0;
   background-color: white;
   border-top: 1px solid var(--border-color);
-  margin: 0;  /* 기존 margin 제거 */
+  margin: 0;
   padding: 15px;
 }
 
