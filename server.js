@@ -4,16 +4,31 @@ const fs = require('fs'); // File system module for reading and writing files
 const bcrypt = require('bcrypt'); // Library for hashing passwords
 const jwt = require('jsonwebtoken'); // Library for creating and verifying JSON Web Tokens
 const cors = require('cors'); // Middleware to enable Cross-Origin Resource Sharing
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, 'public/uploads/')
+  },
+  filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname))
+  }
+});
+
+const upload = multer({ storage: storage });
 
 // Initialize Express application
 const app = express();
-const port = 3002; // Port number on which the server will run
+const port = 3003; // Port number on which the server will run
 const SECRET_KEY = 'your_secret_key_here'; // Secret key for JWT signing (should be kept secret in production)
 
 // Middleware setup
 app.use(express.static('public')); // Serve static files from the 'public' directory
 app.use(express.json()); // Parse JSON request bodies
 app.use(cors()); // Enable CORS for all routes
+app.use('/uploads', express.static('public/uploads'));
+app.use('/uploads', express.static('uploads'));
 
 // Function to read users from JSON file
 function readUsers() {
@@ -132,7 +147,6 @@ app.get('/api/home', authenticateToken, (req, res) => {
   }
 });
 
-
 // Route for user login
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body; // Extract username and password from request body
@@ -165,24 +179,29 @@ app.get('/api/verify', (req, res) => {
   });
 });
 
-app.post('/api/posts', authenticateToken, (req, res) => {
-  const { title, content, imageUrl } = req.body;
+app.post('/api/posts', authenticateToken, upload.single('image'), (req, res) => {
+  const { content } = req.body;
+  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+  
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'Image is required' });
+  }
+
   const posts = readPosts();
-  const newPost = { 
-    id: Date.now(), 
-    title, 
-    content, 
+  const newPost = {
+    id: Date.now(),
+    content,
     author: req.user.username,
-    userId: req.user.id, // 사용자 ID 추가
-    imageUrl, 
-    likes: 0, 
-    comments: [] 
+    imageUrl,
+    likes: 0,
+    comments: []
   };
+
   posts.posts.unshift(newPost);
   writePosts(posts);
-  res.status(201).json(newPost);
-});
 
+  res.status(201).json(newPost);
+})[1];
 
 app.post('/api/posts/:id/like', authenticateToken, (req, res) => {
   const postId = parseInt(req.params.id);

@@ -120,8 +120,6 @@ header {
     color: #666;
 }
 
-
-/* 기본적으로 모든 요소 표시 */
 .search-bar,
 .logo,
 .user-menu,
@@ -129,7 +127,6 @@ header {
     display: flex;
 }
 
-/* 화면 너비가 768px 이하일 때 */
 @media screen and (max-width: 768px) {
     .search-bar {
         display: none;
@@ -152,7 +149,6 @@ header {
     }
 }
 
-/* 기존 CSS에 추가 */
 .auth-container {
     max-width: 350px;
     margin: 60px auto;
@@ -241,7 +237,6 @@ header {
     font-weight: bold;
 }
 
-/* 로그인 전에는 헤더 숨기기 */
 body:not(.logged-in) header {
     display: none;
 }
@@ -472,42 +467,76 @@ main {
 }
 
 .posts-container {
-  max-width: 600px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1280px;
+  height: 400px;
   margin: 0 auto;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
 }
 
 .post {
-  background-color: white;
-  border: 1px solid var(--border-color);
-  border-radius: 0;
-  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;  /* 높이 100%로 설정 */
+}
+
+.user-header {
+  width: 20px;
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid #efefef;
+}
+
+.user-avatar {
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-id {
+  font-weight: 600;
+  color: #262626;
+  font-size: 14px;
 }
 
 .post:hover {
   transform: translateY(-5px);
 }
 
-.post h2 {
-  font-size: 1.2rem;
-  margin: 15px;
-  color: var(--primary-color);
-}
-
-.post p {
-  margin: 0 15px 15px;
-  font-size: 0.9rem;
-  color: var(--text-color);
-}
-
+/* This is for profile image */
 .post img {
   width: 100%;
   height: auto;
   object-fit: cover;
 }
+
+/* This is for the post image */
+.post-image-container {
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+}
+
+.post-image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
 
 .like-button {
   background-color: var(--secondary-color);
@@ -530,9 +559,8 @@ main {
   overflow-y: auto;
 }
 
-.comment {
-  margin-bottom: 10px;
-  font-size: 0.85rem;
+.comments {
+  margin-top: auto;  /* 이 속성만 추가 */
 }
 
 .comment strong {
@@ -540,9 +568,12 @@ main {
 }
 
 .comment-form {
-  display: flex;
-  margin: 15px;
-  gap: 10px;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  border-top: 1px solid var(--border-color);
+  margin: 0;  /* 기존 margin 제거 */
+  padding: 15px;
 }
 
 .comment-form input {

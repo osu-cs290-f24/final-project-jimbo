@@ -308,10 +308,16 @@ document.addEventListener('DOMContentLoaded', () => {
     postElement.appendChild(userHeader);
 
     if (post.imageUrl) {
+      const imageContainer = document.createElement('div');
+      imageContainer.className = 'post-image-container';
+
       const image = document.createElement('img');
       image.src = post.imageUrl;
-      image.alt = post.title;
-      postElement.appendChild(image);
+      image.alt = 'Post image';
+      image.className = 'post-image';
+
+      imageContainer.appendChild(image);
+      postElement.appendChild(imageContainer);
     }
 
     const content = document.createElement('p');
@@ -358,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     commentForm.addEventListener('submit', (e) => {
       e.preventDefault();
       addComment(post.id, commentInput.value);
+      commentInput.value = '';
     });
 
     postElement.appendChild(commentForm);
@@ -399,10 +406,18 @@ document.addEventListener('DOMContentLoaded', () => {
     contentTextarea.placeholder = 'Enter post content';
     contentTextarea.required = true;
 
-    const imageUrlInput = document.createElement('input');
-    imageUrlInput.type = 'text';
-    imageUrlInput.id = 'postImageUrl';
-    imageUrlInput.placeholder = 'Enter image URL (optional)';
+    const imageDropZone = document.createElement('div');
+    imageDropZone.id = 'imageDropZone';
+    imageDropZone.textContent = 'Drag and drop image here';
+    imageDropZone.style.border = '2px dashed #ccc';
+    imageDropZone.style.padding = '20px';
+    imageDropZone.style.textAlign = 'center';
+
+    const imagePreview = document.createElement('img');
+    imagePreview.id = 'imagePreview';
+    imagePreview.style.display = 'none';
+    imagePreview.style.maxWidth = '100%';
+    imagePreview.style.marginTop = '10px';
 
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'button-container';
@@ -417,25 +432,57 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelButton.textContent = 'Cancel';
     cancelButton.className = 'cancel-button';
     cancelButton.addEventListener('click', () => {
-      createPostForm.remove();
-      renderHome();
+        createPostForm.remove();
+        renderHome();
     });
 
     buttonContainer.appendChild(submitButton);
     buttonContainer.appendChild(cancelButton);
 
     createPostForm.appendChild(contentTextarea);
-    createPostForm.appendChild(imageUrlInput);
+    createPostForm.appendChild(imageDropZone);
+    createPostForm.appendChild(imagePreview);
     createPostForm.appendChild(buttonContainer);
 
-    createPostForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const content = document.getElementById('postContent').value;
-      const imageUrl = document.getElementById('postImageUrl').value;
+    let imageFile = null;
 
-      createPost(content, imageUrl);
+    imageDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        imageDropZone.style.backgroundColor = '#f0f0f0';
     });
 
+    imageDropZone.addEventListener('dragleave', () => {
+        imageDropZone.style.backgroundColor = '';
+    });
+
+    imageDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        imageDropZone.style.backgroundColor = '';
+        imageFile = e.dataTransfer.files[0];
+        if (imageFile && imageFile.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                imageDropZone.textContent = 'Image uploaded';
+            };
+            reader.readAsDataURL(imageFile);
+        } else {
+            alert('Please drop a valid image file.');
+        }
+    });
+
+    createPostForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const content = document.getElementById('postContent').value;
+
+        if (!imageFile) {
+            alert('Please attach an image to create a post.');
+            return;
+        }
+
+        createPost(content, imageFile);
+    });
 
     const existingCreateMenu = document.querySelector('.create-menu');
     if (existingCreateMenu) existingCreateMenu.remove();
@@ -443,23 +490,34 @@ document.addEventListener('DOMContentLoaded', () => {
     app.appendChild(createPostForm);
 }
 
-  // Function to create a new post
-  function createPost(content, imageUrl) {
+  function createPost(content, imageFile) {
+    const formData = new FormData();
+    formData.append('content', content);
+    formData.append('image', imageFile);
+
     fetch('/api/posts', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
-      body: JSON.stringify({ content, imageUrl })
+      body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then(post => {
+      alert('Post created successfully!');
       renderHome();
     })
-    .catch(error => console.error('Error creating post:', error));
-  }  
-  
+    .catch(error => {
+      console.error('Error creating post:', error);
+      alert('Error creating post. Please try again.');
+    });
+  }
+
   // Add event listener for logo click
   document.getElementById('logo').addEventListener('click', () => {
     if (currentUser) {

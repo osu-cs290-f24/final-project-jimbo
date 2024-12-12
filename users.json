@@ -15,6 +15,13 @@
     {
       "username": "joy",
       "password": "$2b$10$q.wPEWfhP3LNf684o/UCzehyQGQ4uitCzaWj.0s5NLg6kLMnFruvO"
+    },
+    {
+      "username": "dlatpwls",
+      "password": "$2b$10$HKcaCDrHbjDEKVVF/7U5Yeuyu66FiJCqIBnqa618bDZ2fsodz3Mfe",
+      "profilePicture": "",
+      "followers": [],
+      "following": []
     }
   ]
 }

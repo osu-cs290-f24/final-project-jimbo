@@ -1,73 +1,30 @@
 {
   "posts": [
     {
-      "id": 1733957219612,
-      "content": "dsf",
+      "id": 1733969926103,
+      "content": "I like it!",
       "author": "qorjin",
-      "imageUrl": "",
-      "likes": 2,
+      "imageUrl": "/uploads/1733969925961.jpg",
+      "likes": 1,
       "comments": [
         {
           "author": "qorjin",
-          "content": "dfsf",
-          "id": 1733957416704
-        },
-        {
-          "author": "qorjin",
-          "content": "dfsf",
-          "id": 1733957417636
-        },
-        {
-          "author": "qorjin",
-          "content": "dfsf",
-          "id": 1733957418340
-        },
-        {
-          "author": "qorjin",
-          "content": "dfsf",
-          "id": 1733957419264
-        },
-        {
-          "author": "qorjin",
-          "content": "dfsf",
-          "id": 1733957419461
+          "content": "wow",
+          "id": 1733970289207
         }
       ],
       "likedBy": [
-        "joy",
         "qorjin"
       ]
     },
     {
-      "id": 1733955139162,
-      "content": "dsf",
+      "id": 1733969401769,
+      "content": "dfdsf",
       "author": "qorjin",
-      "imageUrl": "",
-      "likes": 2,
-      "comments": [
-        {
-          "author": "qorjin",
-          "content": "sdff",
-          "id": 1733957063111
-        },
-        {
-          "author": "qorjin",
-          "content": "sdff",
-          "id": 1733957063592
-        },
-        {
-          "author": "qorjin",
-          "content": "sfasdfs",
-          "id": 1733957084041
-        },
-        {
-          "author": "qorjin",
-          "content": "asfdasd",
-          "id": 1733957186649
-        }
-      ],
+      "imageUrl": "/uploads/1733969401179.jpg",
+      "likes": 1,
+      "comments": [],
       "likedBy": [
-        "joy",
         "qorjin"
       ]
     }
