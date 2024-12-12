@@ -1,34 +1,5 @@
 {
   "users": [
-    {
-      "username": "qorjin",
-      "password": "$2b$10$g7j.Ve/TwHx/96IK2HfzYuzahE3GeHNYYoTdxnKX14KP/tTADQ5wS"
-    },
-    {
-      "username": "hello",
-      "password": "$2b$10$Afc19/rwJ.dYQ0eEtXi49e2uZYMnXyEDFZkigQN/jxocx4j2yWMmC"
-    },
-    {
-      "username": "jinwoo",
-      "password": "$2b$10$1JlT/DDf6II0PFxtt15rFOhjKfI5XJw4sB04xpT3XQrvdK6LG7yxi"
-    },
-    {
-      "username": "joy",
-      "password": "$2b$10$q.wPEWfhP3LNf684o/UCzehyQGQ4uitCzaWj.0s5NLg6kLMnFruvO"
-    },
-    {
-      "username": "dlatpwls",
-      "password": "$2b$10$HKcaCDrHbjDEKVVF/7U5Yeuyu66FiJCqIBnqa618bDZ2fsodz3Mfe",
-      "profilePicture": "",
-      "followers": [],
-      "following": []
-    },
-    {
-      "username": "wlsdn",
-      "password": "$2b$10$kmj3OifK4tRa1DSkf.ziWudkRID4.OaxxNP38UkH54s2AxBLKGEgS",
-      "profilePicture": "",
-      "followers": [],
-      "following": []
-    }
+   
   ]
 }

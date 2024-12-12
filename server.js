@@ -201,7 +201,7 @@ app.post('/api/posts', authenticateToken, upload.single('image'), (req, res) => 
   writePosts(posts);
 
   res.status(201).json(newPost);
-})[1];
+});
 
 app.post('/api/posts/:id/like', authenticateToken, (req, res) => {
   const postId = parseInt(req.params.id);
