@@ -331,6 +331,9 @@ document.addEventListener('DOMContentLoaded', () => {
     likeButton.addEventListener('click', () => likePost(post.id));
     postElement.appendChild(likeButton);
 
+    const commentContainer = document.createElement('div');
+    commentContainer.className = 'comment-container';
+
     const commentsDiv = document.createElement('div');
     commentsDiv.className = 'comments';
     post.comments.forEach(comment => {
@@ -344,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
       commentDiv.appendChild(commentP);
       commentsDiv.appendChild(commentDiv);
     });
-    postElement.appendChild(commentsDiv);
+    commentContainer.appendChild(commentsDiv);
 
     const commentForm = document.createElement('form');
     commentForm.className = 'comment-form';
@@ -366,8 +369,9 @@ document.addEventListener('DOMContentLoaded', () => {
       addComment(post.id, commentInput.value);
       commentInput.value = '';
     });
+    commentContainer.appendChild(commentForm);
 
-    postElement.appendChild(commentForm);
+    postElement.appendChild(commentContainer);
 
     return postElement;
   }  
@@ -527,26 +531,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Event listener for the profile button
   document.getElementById('profileButton').addEventListener('click', () => {
     if (currentUser) {
-      // Remove any existing menus (profile or create menus)
+      // Remove existing menus
       const existingProfileMenu = document.querySelector('.profile-menu');
       const existingCreateMenu = document.querySelector('.create-menu');
-      if (existingProfileMenu) existingProfileMenu.remove();
       if (existingCreateMenu) existingCreateMenu.remove();
-  
+
       // Toggle profile menu
-      const profileMenu = document.querySelector('.profile-menu');
-      if (!profileMenu) {
+      if (existingProfileMenu) {
+        existingProfileMenu.remove();
+      } else {
+        // Create new profile menu
         const newProfileMenu = document.createElement('div');
         newProfileMenu.className = 'profile-menu';
-  
-        // Display user name
+
+        // Display username
         const usernameDisplay = document.createElement('p');
         usernameDisplay.textContent = currentUser.username;
         usernameDisplay.className = 'profile-username';
         newProfileMenu.appendChild(usernameDisplay);
-  
+
         // Menu options
         const menuOptions = [
           { text: 'My Posts', action: () => console.log('My Posts clicked') },
@@ -559,7 +565,8 @@ document.addEventListener('DOMContentLoaded', () => {
           { text: 'Settings', action: () => console.log('Settings clicked') },
           { text: 'Logout', action: handleLogout }
         ];
-  
+
+        // Create menu items
         menuOptions.forEach(option => {
           const menuItem = document.createElement('button');
           menuItem.className = 'profile-menu-item';
@@ -567,34 +574,39 @@ document.addEventListener('DOMContentLoaded', () => {
           menuItem.addEventListener('click', option.action);
           newProfileMenu.appendChild(menuItem);
         });
-  
+
+        // Append the new profile menu to the app
         app.appendChild(newProfileMenu);
       }
     } else {
+      // If no user is logged in, render the login page
       renderLoginPage();
     }
   });
-  
+
+  // Event listener for the create button
   document.getElementById('createButton').addEventListener('click', () => {
     if (currentUser) {
-      // Remove any existing menus (profile or create menus)
+      // Remove existing menus
       const existingProfileMenu = document.querySelector('.profile-menu');
       const existingCreateMenu = document.querySelector('.create-menu');
       if (existingProfileMenu) existingProfileMenu.remove();
-      if (existingCreateMenu) existingCreateMenu.remove();
-  
+
       // Toggle create menu
-      const createMenu = document.querySelector('.create-menu');
-      if (!createMenu) {
+      if (existingCreateMenu) {
+        existingCreateMenu.remove();
+      } else {
+        // Create new create menu
         const newCreateMenu = document.createElement('div');
         newCreateMenu.className = 'create-menu';
-  
+
         // Menu options
         const menuOptions = [
           { text: 'Create Post', action: () => renderCreatePost() },
           { text: 'Create Story', action: () => console.log('Create Story clicked') }
         ];
-  
+
+        // Create menu items
         menuOptions.forEach(option => {
           const menuItem = document.createElement('button');
           menuItem.className = 'create-menu-item';
@@ -602,10 +614,12 @@ document.addEventListener('DOMContentLoaded', () => {
           menuItem.addEventListener('click', option.action);
           newCreateMenu.appendChild(menuItem);
         });
-  
+
+        // Append the new create menu to the app
         app.appendChild(newCreateMenu);
       }
     } else {
+      // If no user is logged in, render the login page
       renderLoginPage();
     }
   });
